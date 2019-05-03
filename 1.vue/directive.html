@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h1>{{number}}</h1>
+        <button v-on:click="decrement">감소</button>
+        <button v-on:click="increment">증가</button>
+        <h1 v-show="visible">{{message}}</h1>
+        <h1 v-if="value > 5">value가 5보다 크다</h1>
+        <h1 v-else-if="value > 3">value가 5보다 작고 3보다 크다</h1>
+        <h1 v-else>value가 3보다 작다</h1>
+
+        <ul>
+            <li v-for="(todo, index) in todos">{{index}}-{{todo.text}}</li>
+        </ul>
+        <input type="checkbox" v-model="go">
+        <hr>
+        <img v-bind:src="go ? smile : good ">
+        
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el:"#app",
+            data:{
+                number:0,
+                message:"안녕하세요",
+                visible:true,
+                value:10,
+                todos: [
+                    {text: "vue 공부"},
+                    {text: "장고 공부"}
+                ],
+                go:true,
+                smile: "https://img.huffingtonpost.com/asset/5bf24ac824000060045835ff.jpeg?ops=scalefit_630_noupscale",
+                good:"https://t1.daumcdn.net/cfile/tistory/9942B3395A3501C304",
+            },
+            methods: {
+                increment: function() {
+                    this.number++
+                },
+                decrement: function() {
+                    this.number--
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>
