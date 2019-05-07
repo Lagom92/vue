@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div id="app">
+        <button v-on:click="getCat">야옹 {{cnt1}}</button>
+        <button v-on:click="getDog">댕댕이 {{cnt2}}</button>
+        <h4 v-if="cnt1 > cnt2">고양이</h4>
+        <h4 v-else-if="cnt1 < cnt2">강아지</h4>
+        <h4 v-else>고양이&강아지</h4>
+
+        <hr>
+        <!-- <img v-bind:src="image">
+        <img v-bind:src="image2"> -->
+
+        <!-- <div v-for="i in imagelist"> <img v-bind:src="i"></div> -->
+        <img v-for="i in imagelist" v-bind:src="i" v-bind:width="300">
+            
+
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script> 
+    <script>
+    
+    const app = new Vue({
+        el:"#app",
+        data:{
+            imagelist:[],
+            image:"",
+            image2:"",
+            cnt1:0,
+            cnt2:0,
+
+        },
+        methods:{
+            getCat:function(){
+                const URL = "https://api.thecatapi.com/v1/images/search"
+                axios.get(URL)
+                .then((response) => {
+                    this.image = response.data[0].url
+                    this.imagelist.unshift(response.data[0].url)
+
+                }),
+                this.cnt1 += 1
+            },
+            getDog:function(){
+                const URL2 = "https://dog.ceo/api/breeds/image/random"
+                axios.get(URL2)
+                .then((r) => {
+                    this. image2 = r.data.message
+                    this.imagelist.unshift(r.data.message)
+                }),
+                this.cnt2 += 1
+            }
+        }
+    })
+    
+    </script>
+</body>
+</html>

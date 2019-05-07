@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h3>{{mm}}</h3>
+    
+        {{msg}}
+        <div v-html="msg"></div>
+        
+        <h2 v-show="false">????</h2>
+        <h2 v-if="false">!!!!</h2>
+        
+        <a v-bind:asd="URL">naver</a>
+
+        <select v-model="select">
+            <option value="all">전체보기</option>
+            <option value="complete">완료</option>
+            <option value="active">미완료</option>
+        </select>
+    </div>
+   
+
+ 
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+    
+    const app = new Vue({
+        el:"#app",
+        data:{
+            mm:"hi~~",
+            msg:"<h3>this is</h3>",
+            URL:"https://www.naver.com",
+            todos:[
+                {text:"공부", complete:true},
+                {text:"놀기", complete:true},
+                {text:"청소", complete:true}
+            ],
+            select:'all'
+        },
+        methods:{
+            asdf:function(){
+                console.log("asdf")
+            }
+        }
+    })
+    
+    </script>
+</body>
+</html>
