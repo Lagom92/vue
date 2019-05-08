@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .completed{
+            text-decoration: line-through;
+            opacity: 0.6;    
+        }
+    </style>
+    <!-- Vue -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- Firebase -->
+    <script src="https://gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+    <!-- VueFire -->
+    <script src="https://unpkg.com/vuefire/dist/vuefire.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>{{title}}</h1>
+        <select v-model="status" >
+            <option value="all">all</option>
+            <option value="active">will do</option>
+            <option value="completed">done</option>
+        </select>
+        <input type="text" v-model="newTodo" v-on:keyup.enter="addTodo">
+        <li v-for="(todo, key) in todosByStatus()" v-bind:class="{completed: todo.completed}" v-bind:key="todo.id">
+            <input type="checkbox" v-model="todo.completed" @change="updateTodo(todo)">
+            {{todo.content}}
+            <button @click="delTodo(key)" v-if="todo.completed">del</button>
+        </li>
+    </div>
+
+
+
+    <!--  -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+    <script>
+        // firebase 사용 전 설정
+         var config = {
+            apiKey: "AIzaSyCC5qo5J-_rDJdhITybyXiTDc33LXbv2Nk",
+            databaseURL: "https://todo-793a6.firebaseio.com",
+            projectId: "todo-793a6",
+        };
+        firebase.initializeApp(config);
+
+        const database = firebase.database()
+        // 
+        const app = new Vue({
+            el:"#app",
+            data:{
+                title:"My todo",
+                // todos:todoStorage.fetch(),
+                newTodo:"",
+                status:"all",
+            },
+            firebase:{
+                todos:database.ref('todos')
+            },
+            methods:{
+                addTodo: function() {
+                    this.$firebaseRefs.todos.push(
+                        {id:Date.now(), content: this.newTodo, complete:"false"}
+                    ),
+                    this.newTodo = ""
+                },
+                delTodo: function(key) {
+                    this.todos.splice(key,1)
+                },
+                todosByStatus:function() {
+                    if (this.status === "active") {
+                        return this.todos.filter((todo) => {
+                            return !todo.completed
+                        })  
+                    } else if (this.status === "completed") {
+                        return this.todos.filter((todo) => {
+                            return todo.completed
+                        }) 
+                    } else {
+                        return this.todos
+                    }
+                },
+                updateTodo:function(todo) {
+                    // 열거형 표현법
+                    const editTodo = {...todo}
+                    delete editTodo['.key']
+                    this.$firebaseRefs.todos.child(todo['.key']).set(editTodo)
+                },
+            },
+            watch:{
+                todos:{
+                    handler:function(todos) {
+                        todoStorage.save(todos)
+                    },
+                    deep: true
+                }
+            },
+        })
+    
+    </script>
+</body>
+</html>

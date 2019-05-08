@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .completed{
+            text-decoration: line-through;
+            opacity: 0.6;    
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>{{title}}</h1>
+        <select v-model="status" >
+            <option value="all">all</option>
+            <option value="active">will do</option>
+            <option value="completed">done</option>
+        </select>
+        <input type="text" v-model="newTodo" v-on:keyup.enter="addTodo">
+        <li v-for="(todo, key) in todosByStatus()" v-bind:class="{completed: todo.completed}" v-bind:key="todo.id">
+            <input type="checkbox" v-model="todo.completed">
+            {{todo.content}}
+            <button @click="delTodo(key)" v-if="todo.completed">del</button>
+        </li>
+    </div>
+
+
+
+    <!--  -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        const STORAGE_KEY = 'vue-todos'
+        const todoStorage = {
+            save:function(todos) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+            },
+            fetch:function() {
+                // object로 바꿔줌
+                // 아무것도 없으면 '[]' 가 나옴
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]' )
+            },
+        }
+        const app = new Vue({
+            el:"#app",
+            data:{
+                title:"My todo",
+                todos:todoStorage.fetch(),
+                newTodo:"",
+                status:"all",
+            },
+            methods:{
+                addTodo: function() {
+                    this.todos.push(
+                        {id:Date.now(), content: this.newTodo, complete:"false"}
+                    ),
+                    this.newTodo = ""
+                },
+                delTodo: function(key) {
+                    this.todos.splice(key,1)
+                },
+                todosByStatus:function() {
+                    if (this.status === "active") {
+                        return this.todos.filter((todo) => {
+                            return !todo.completed
+                        })  
+                    } else if (this.status === "completed") {
+                        return this.todos.filter((todo) => {
+                            return todo.completed
+                        }) 
+                    } else {
+                        return this.todos
+                    }
+                },
+            },
+            watch:{
+                todos:{
+                    handler:function(todos) {
+                        todoStorage.save(todos)
+                    },
+                    deep: true
+                }
+            },
+        })
+    
+    </script>
+</body>
+</html>
